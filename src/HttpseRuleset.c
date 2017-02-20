@@ -220,6 +220,7 @@ HttpseRuleset_perform2(HttpseRuleset *ru)
 				snprintf(lbuf, HTTPSE_XDATA_BUFSZ, cformats[2], 
 					xdata[i + 1].host);
 
+				HttpseVector_append1(lbuf, v2);
 				++i;
 			}
 			++i;
