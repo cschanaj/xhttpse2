@@ -168,4 +168,5 @@ httpse_getopt_long(int argc, char **argv, HttpseRulesetOptions *roptions)
 			argv[0], argv[0]);
 		return 0;
 	}
+	return 1;
 }
