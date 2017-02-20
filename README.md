@@ -22,7 +22,7 @@ Automatically generate HTTPS Everywhere ruleset
      -v, --verbose                   Enable libcurl verbose mode
    
     Misc.
-         --num-thread NUM            Use NUM threads whenever possible
+         --num-threads NUM           Use NUM threads whenever possible
      -h, --help                      Display this help and exit
 
 ## Dependencies
