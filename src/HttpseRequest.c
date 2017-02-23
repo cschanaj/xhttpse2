@@ -39,6 +39,9 @@ HttpseRequest_init(const char *url, const HttpseRequestOptions *options)
 	HTTPSE_CURL_SETOPT(rq->curl, WRITEFUNCTION, HttpseVector_append);
 	HTTPSE_CURL_SETOPT(rq->curl, HEADERDATA, rq->hd);
 	HTTPSE_CURL_SETOPT(rq->curl, HEADERFUNCTION, HttpseVector_append);
+	
+	/* Remark: See https://curl.haxx.se/libcurl/c/multithread.html */
+	HTTPSE_CURL_SETOPT(rq->curl, NOSIGNAL, 1L);
 
 	/* Remark: curl_easy_setopt() */
 	HTTPSE_CURL_SETOPT(rq->curl, ACCEPT_ENCODING, 

@@ -69,7 +69,7 @@ typedef struct HttpseRulesetOptions
     .securecookie = 0L,               \
     .output = NULL,                   \
     .options = kHttpseRequestOptions, \
-    .num_threads = 1L,                \
+    .num_threads = 4L,                \
 }
 #endif
 
