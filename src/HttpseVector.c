@@ -19,8 +19,8 @@ HttpseVector_init1(const void *ptr, size_t size, size_t nmemb)
 }
 
 size_t
-HttpseVector_append(const void *ptr, size_t size, 
-	size_t nmemb, HttpseVector *ctx)
+HttpseVector_append(const void *ptr, size_t size, size_t nmemb, 
+	HttpseVector *ctx)
 {
 	/* FIXME: Undocumented behavior */
 	if(!ctx || !(size * nmemb))
@@ -59,7 +59,11 @@ HttpseVector_append(const void *ptr, size_t size,
 size_t
 HttpseVector_append1(const char *ptr, HttpseVector *ctx)
 {
-	return HttpseVector_append(ptr, sizeof(*ptr), strlen(ptr), ctx);
+	if(ptr)
+	{
+		return HttpseVector_append(ptr, sizeof(*ptr), strlen(ptr), ctx);
+	}
+	return 0L;
 }
 
 HttpseVector *

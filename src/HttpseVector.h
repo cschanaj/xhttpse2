@@ -70,8 +70,8 @@ HttpseVector_init1(const void *ptr, size_t size, size_t nmemb);
  * Extends HttpseVector#data by appending additional data at the end.
  */
 size_t
-HttpseVector_append(const void *ptr, size_t size, 
-	size_t nmemb, HttpseVector *ctx);
+HttpseVector_append(const void *ptr, size_t size, size_t nmemb, 
+	HttpseVector *ctx);
 
 /**
  * See HttpseVector_append()
