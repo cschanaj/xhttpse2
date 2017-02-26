@@ -26,8 +26,8 @@ Automatically generate HTTPS Everywhere ruleset
      -h, --help                      Display this help and exit
 
 ## Dependencies
- - CURL https://github.com/curl/curl
- - Google Gumbo Parser https://github.com/google/gumbo-parser
+    CURL                https://github.com/curl/curl
+    Google Gumbo Parser https://github.com/google/gumbo-parser
 
 ## Apache License, Version 2.0
     Copyright 2017 Pasu Chan <cschanaj@connect.ust.hk>
