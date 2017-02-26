@@ -56,6 +56,8 @@ HttpseXData_perform(void *xdatap)
 
 		if(HTTPSE_OK != (retval = HttpseRequest_perform(tdata->rp)))
 		{
+			/* Remark: This host works on HTTPS only. */
+			retval = HTTPSE_OK;
 			break;
 		}
 	
