@@ -46,7 +46,7 @@ typedef struct HttpseRulesetOptions
 	long securecookie;
 
 	/**
-	 * Output filename, defaults write to stdout.
+	 * Output file name, defaults write to stdout.
 	 */
 	const char *output;
 
@@ -84,7 +84,7 @@ typedef struct HttpseRuleset
 	HttpseVector *_xdata;
 
 	/**
-	 * Actual ruleset.
+	 * Actual Ruleset.
 	 */
 	HttpseVector *ctx;
 

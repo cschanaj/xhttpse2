@@ -28,7 +28,7 @@
 typedef enum HttpseCode
 {
 	/**
-	 * Everything was ok 
+	 * Everything was OK 
 	 */
 	HTTPSE_OK = CURLE_OK,
 
@@ -73,7 +73,7 @@ typedef enum HttpseCode
 	HTTPSE_DIFFERENT_CONTENT,
 
 	/**
-	 * Secure connection use plaintext resources.
+	 * Secure connection use plain text resources.
 	 */
 	HTTPSE_MIXED_CONTENT,
 

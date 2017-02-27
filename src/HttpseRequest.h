@@ -36,7 +36,7 @@ typedef struct HttpseRequestOptions
 	const char *capath;
 
 	/**
-	 * Timeout fir the connect phase (in seconds).
+	 * Timeout for the connect phase (in seconds).
 	 */
 	long connect_timeout;
 
@@ -79,7 +79,7 @@ typedef struct HttpseRequestOptions
 typedef struct HttpseRequest
 {
 	/**
-	 * Polonger to the URL to use in the request.
+	 * Pointer to the URL to use in the request.
 	 */
 	char *url;
 
@@ -89,12 +89,12 @@ typedef struct HttpseRequest
 	CURL *curl;
 
 	/**
-	 * Polonger to pass to libcurl write callback.
+	 * Pointer to pass to libcurl write callback.
 	 */
 	HttpseVector *userp;
 
 	/**
-	 * Polonger to pass to libcurl header callback.
+	 * Pointer to pass to libcurl header callback.
 	 */
 	HttpseVector *hd;
 } HttpseRequest;

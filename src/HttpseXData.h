@@ -30,12 +30,12 @@
 typedef struct HttpseTData
 {
 	/**
-	 * Plaintext url, e.g. http://www.example.com
+	 * Plain text URL, e.g. http://www.example.com
 	 */
 	char urlp[HTTPSE_XDATA_BUFSZ];
 
 	/**
-	 * Secure url, e.g. https://www.example.com
+	 * Secure URL, e.g. https://www.example.com
 	 */
 	char urls[HTTPSE_XDATA_BUFSZ];
 
