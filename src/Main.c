@@ -23,6 +23,7 @@ main(int argc, char **argv)
 		if(outfile)
 		{
 			fwrite(ru->ctx->data, 1, ru->ctx->size, outfile);
+			fclose(outfile);
 		}
 	}
 	else
