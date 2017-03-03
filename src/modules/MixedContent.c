@@ -49,10 +49,24 @@ HttpseCode
 httpse_check_mixed_content(const HttpseTData *tdata)
 {
 	int mixed = 0;
-	char *html = tdata->rs->userp->size ? tdata->rs->userp->c_str : "";
 
-	GumboOutput *output = gumbo_parse(html);
-	if(output)
+	const char *url  = NULL;
+	const char *html = NULL;
+
+	GumboOutput *output = NULL;
+
+	/* Remark: Effective URL is over HTTP, Mixed Content never happen
+	 */
+	curl_easy_getinfo(tdata->rs->curl, CURLINFO_EFFECTIVE_URL, &url);
+	if(url && url == strstr(url, "http://"))
+	{
+		return HTTPSE_OK;
+	}
+
+	html = tdata->rs->userp->size ? tdata->rs->userp->c_str : "";
+	output = gumbo_parse(html);
+
+	if(output && output->root)
 	{
 		mixed = httpse_check_mixed_content1(output->root);
 		gumbo_destroy_output(&kGumboDefaultOptions, output);
