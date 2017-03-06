@@ -28,7 +28,7 @@ Automatically generate HTTPS Everywhere ruleset
 ## Dependencies
     CURL                https://github.com/curl/curl
     Google Gumbo Parser https://github.com/google/gumbo-parser
-    OpenSSL             https://github.com/openssl/openssl
+    OpenSSL v1.1.0+     https://github.com/openssl/openssl
 
 ## Apache License, Version 2.0
     Copyright 2017 Pasu Chan <cschanaj@connect.ust.hk>
