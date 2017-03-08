@@ -26,6 +26,31 @@ httpse_check_mixed_content1(const GumboNode *node)
 			{
 				return 1;
 			}
+			break;
+		}
+
+	case GUMBO_TAG_LINK:
+		{
+			GumboAttribute *attr = gumbo_get_attribute(&node->v.element
+				.attributes, "href");
+
+			if(attr && 0 == strncmp("http://", attr->value, 7))
+			{
+				return 1;
+			}
+			break;
+		}
+
+	case GUMBO_TAG_OBJECT:
+		{
+			GumboAttribute *attr = gumbo_get_attribute(&node->v.element
+				.attributes, "data");
+
+			if(attr && 0 == strncmp("http://", attr->value, 7))
+			{
+				return 1;
+			}
+			break;
 		}
 
 	default:
