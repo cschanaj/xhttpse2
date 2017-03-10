@@ -40,7 +40,7 @@ print_usage(const char *me)
 {
 	fprintf(stdout,
 	"Usage: %s [OPTION] ... [FILE]\n"
-	"Automatically generate HTTPS Everywhere ruleset.\n\n"
+	"Automatically generate HTTPS Everywhere ruleset.\n"
 	"\n"
 	"Options\n"
 	"     --name NAME                 Set NAME the output ruleset name\n"
