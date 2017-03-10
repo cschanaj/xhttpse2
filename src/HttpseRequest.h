@@ -62,14 +62,14 @@ typedef struct HttpseRequestOptions
 } HttpseRequestOptions;
 
 #ifndef kHttpseRequestOptions
-#define kHttpseRequestOptions { \
-    .ac_encoding = 0L,          \
-    .capath = NULL,             \
-    .connect_timeout = 10L,     \
-    .timeout = 20L,             \
-    .tr_encoding = 0L,          \
-    .useragent = NULL,          \
-    .verbose = 0L,              \
+#define kHttpseRequestOptions {                       \
+    .ac_encoding = 0L,                                \
+    .capath = NULL,                                   \
+    .connect_timeout = 10L,                           \
+    .timeout = 20L,                                   \
+    .tr_encoding = 0L,                                \
+    .useragent = "libcurl/" LIBCURL_VERSION,          \
+    .verbose = 0L,                                    \
 }
 #endif
 
