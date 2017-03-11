@@ -16,10 +16,11 @@ httpse_check_secure_fallback1(const GumboNode *node, const char *urlp)
 
 	do
 	{
-		char mformat[1024];
+		char mformat1[HTTPSE_XDATA_BUFSZ];
+		char mformat2[HTTPSE_XDATA_BUFSZ];
 
-		GumboAttribute *http_equiv = NULL; 
-		GumboAttribute *content = NULL;
+		const GumboAttribute *http_equiv = NULL; 
+		const GumboAttribute *content = NULL;
 
 		if(node->v.element.tag != GUMBO_TAG_META)
 		{
@@ -43,9 +44,15 @@ httpse_check_secure_fallback1(const GumboNode *node, const char *urlp)
 			break;
 		}
 
-		snprintf(mformat, 1024, "url=%s", urlp);
+		snprintf(mformat1, HTTPSE_XDATA_BUFSZ, "url=%s", urlp);
+		snprintf(mformat2, HTTPSE_XDATA_BUFSZ, "url=\'%s\'", urlp);
 
-		if(strcasestr(content->value, mformat))
+		if(strcasestr(content->value, mformat1))
+		{
+			return 1;
+		}
+
+		if(strcasestr(content->value, mformat2))
 		{
 			return 1;
 		}
