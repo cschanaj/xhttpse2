@@ -31,12 +31,23 @@ httpse_check_mixed_content1(const GumboNode *node)
 
 	case GUMBO_TAG_LINK:
 		{
+			/* Remark: See https://www.w3schools.com/tags/att_link_rel.asp
+			 */
+			GumboAttribute *rel  = gumbo_get_attribute(&node->v.element
+				.attributes, "rel");
+
 			GumboAttribute *attr = gumbo_get_attribute(&node->v.element
 				.attributes, "href");
 
-			if(attr && 0 == strncmp("http://", attr->value, 7))
+			if(rel && rel->value)
 			{
-				return 1;
+				if(strcasestr(rel->value, "icon|stylesheet"))
+				{
+					if(attr && 0 == strncmp("http://", attr->value, 7))
+					{
+						return 1;
+					}
+				}
 			}
 			break;
 		}
