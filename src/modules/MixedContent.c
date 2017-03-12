@@ -41,7 +41,7 @@ httpse_check_mixed_content1(const GumboNode *node)
 
 			if(rel && rel->value)
 			{
-				if(strcasestr(rel->value, "icon|stylesheet"))
+				if(NULL != strcasestr(rel->value, "icon|stylesheet"))
 				{
 					if(attr && 0 == strncmp("http://", attr->value, 7))
 					{

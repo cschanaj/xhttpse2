@@ -34,7 +34,7 @@ httpse_check_secure_fallback1(const GumboNode *node, const char *urlp)
 			.attributes, "content");
 
 		if(!http_equiv || !http_equiv->value || 
-			strcasecmp(http_equiv->value, "refresh") != 0)
+			0 != strcasecmp(http_equiv->value, "refresh"))
 		{
 			break;
 		}
@@ -47,12 +47,12 @@ httpse_check_secure_fallback1(const GumboNode *node, const char *urlp)
 		snprintf(mformat1, HTTPSE_XDATA_BUFSZ, "url=%s", urlp);
 		snprintf(mformat2, HTTPSE_XDATA_BUFSZ, "url=\'%s\'", urlp);
 
-		if(strcasestr(content->value, mformat1))
+		if(NULL != strcasestr(content->value, mformat1))
 		{
 			return 1;
 		}
 
-		if(strcasestr(content->value, mformat2))
+		if(NULL != strcasestr(content->value, mformat2))
 		{
 			return 1;
 		}

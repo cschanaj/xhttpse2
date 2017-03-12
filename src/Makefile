@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-c -I. -I./modules/
-DFLAGS=-I.
+CFLAGS=-c -I. -I./modules/ -D_GNU_SOURCE
+DFLAGS=-I. -D_GNU_SOURCE
 SOURCES=HttpseVector.c HttpseRequest.c HttpseCode.c ./modules/StatusCode.c \
 ./modules/SecureFallback.c ./modules/DifferentContent.c \
 ./modules/MixedContent.c HttpseXData.c HttpseRuleset.c Main.c
