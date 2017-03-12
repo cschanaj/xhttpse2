@@ -4,6 +4,12 @@
 int
 httpse_check_mixed_content1(const GumboNode *node)
 {
+	int mixed = 0;
+
+	const GumboAttribute *attr = NULL;
+	const GumboAttribute *rel  = NULL;
+
+
 	if(!node)
 	{
 		return 0;
@@ -14,71 +20,58 @@ httpse_check_mixed_content1(const GumboNode *node)
 		return 0;
 	}
 
+
 	switch(node->v.element.tag)
 	{
 	case GUMBO_TAG_SCRIPT:
 	case GUMBO_TAG_IFRAME:
-		{
-			GumboAttribute *attr = gumbo_get_attribute(&node->v.element
-				.attributes, "src");
+		/* <script>, <iframe> (src attribute) */
+		attr = gumbo_get_attribute(&node->v.element.attributes, "src");
 
-			if(attr && 0 == strncmp("http://", attr->value, 7))
-			{
-				return 1;
-			}
-			break;
+		if(attr && 0 == strncmp("http://", attr->value, 7))
+		{
+			return 1;
 		}
+		break;
 
 	case GUMBO_TAG_LINK:
+		/* <link> (href attribute) */
+		/* Remark: See https://www.w3schools.com/tags/att_link_rel.asp */
+		rel  = gumbo_get_attribute(&node->v.element.attributes, "rel");
+		attr = gumbo_get_attribute(&node->v.element.attributes, "href");
+
+		if(rel && NULL != strcasestr(rel->value, "icon|stylesheet"))
 		{
-			/* Remark: See https://www.w3schools.com/tags/att_link_rel.asp
-			 */
-			GumboAttribute *rel  = gumbo_get_attribute(&node->v.element
-				.attributes, "rel");
-
-			GumboAttribute *attr = gumbo_get_attribute(&node->v.element
-				.attributes, "href");
-
-			if(rel && rel->value)
-			{
-				if(NULL != strcasestr(rel->value, "icon|stylesheet"))
-				{
-					if(attr && 0 == strncmp("http://", attr->value, 7))
-					{
-						return 1;
-					}
-				}
-			}
-			break;
-		}
-
-	case GUMBO_TAG_OBJECT:
-		{
-			GumboAttribute *attr = gumbo_get_attribute(&node->v.element
-				.attributes, "data");
-
 			if(attr && 0 == strncmp("http://", attr->value, 7))
 			{
 				return 1;
 			}
-			break;
 		}
+		break;
+	
+	case GUMBO_TAG_OBJECT:
+		/* <object> (data attribute) */
+		attr = gumbo_get_attribute(&node->v.element.attributes, "data");
 
+		if(attr && 0 == strncmp("http://", attr->value, 7))
+		{
+			return 1;
+		}
+		break;
+	
 	default:
 		break;
 	}
 
+
 	size_t i, children_len = node->v.element.children.length;
 	const GumboNode **children = (void *) node->v.element.children.data;
 
-	for(i = 0; i < children_len; ++i)
+	for(i = 0; i < children_len && !mixed; ++i)
 	{
-		if(1 == httpse_check_mixed_content1(children[i]))
-		{
-			return 1;
-		}
+		mixed = httpse_check_mixed_content1(children[i]);
 	}
-	return 0;
+	return mixed ? HTTPSE_MIXED_CONTENT : HTTPSE_OK;
 }
 
 HttpseCode

@@ -4,6 +4,16 @@
 int
 httpse_check_secure_fallback1(const GumboNode *node, const char *urlp)
 {
+	int fallback = 0;
+
+	char meta1[HTTPSE_XDATA_BUFSZ];
+	char meta2[HTTPSE_XDATA_BUFSZ];
+
+	const GumboAttribute *http_equiv = NULL;
+	const GumboAttribute *content    = NULL;
+
+
+
 	if(!node)
 	{
 		return 0;
@@ -14,14 +24,9 @@ httpse_check_secure_fallback1(const GumboNode *node, const char *urlp)
 		return 0;
 	}
 
+
 	do
 	{
-		char mformat1[HTTPSE_XDATA_BUFSZ];
-		char mformat2[HTTPSE_XDATA_BUFSZ];
-
-		const GumboAttribute *http_equiv = NULL; 
-		const GumboAttribute *content = NULL;
-
 		if(node->v.element.tag != GUMBO_TAG_META)
 		{
 			break;
@@ -29,30 +34,25 @@ httpse_check_secure_fallback1(const GumboNode *node, const char *urlp)
 
 		http_equiv = gumbo_get_attribute(&node->v.element
 			.attributes, "http-equiv");
-
-		content = gumbo_get_attribute(&node->v.element
+		
+		content    = gumbo_get_attribute(&node->v.element
 			.attributes, "content");
 
-		if(!http_equiv || !http_equiv->value || 
-			0 != strcasecmp(http_equiv->value, "refresh"))
+		if(!http_equiv || strcasecmp(http_equiv->value, "refresh") != 0)
 		{
 			break;
 		}
 
-		if(!content || !content->value)
-		{
-			break;
-		}
+		/* Remark: meta2 is correct without the closing */
+		snprintf(meta1, HTTPSE_XDATA_BUFSZ, "url=%s", urlp);
+		snprintf(meta2, HTTPSE_XDATA_BUFSZ, "url=\'%s", urlp);
 
-		snprintf(mformat1, HTTPSE_XDATA_BUFSZ, "url=%s", urlp);
-		snprintf(mformat2, HTTPSE_XDATA_BUFSZ, "url=\'%s\'", urlp);
-
-		if(NULL != strcasestr(content->value, mformat1))
+		if(content && strcasestr(content->value, meta1) != NULL)
 		{
 			return 1;
 		}
 
-		if(NULL != strcasestr(content->value, mformat2))
+		if(content && strcasestr(content->value, meta2) != NULL)
 		{
 			return 1;
 		}
@@ -61,14 +61,11 @@ httpse_check_secure_fallback1(const GumboNode *node, const char *urlp)
 	size_t i, children_len = node->v.element.children.length;
 	const GumboNode **children = (void *) node->v.element.children.data;
 
-	for(i = 0; i < children_len; ++i)
+	for(i = 0; i < children_len && !fallback; ++i)
 	{
-		if(1 == httpse_check_secure_fallback1(children[i], urlp))
-		{
-			return 1;
-		}
+		fallback = httpse_check_secure_fallback1(children[i], urlp);
 	}
-	return 0;
+	return fallback ? HTTPSE_SECURE_FALLBACK : HTTPSE_OK;
 }
 
 HttpseCode
