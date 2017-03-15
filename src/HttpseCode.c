@@ -3,13 +3,9 @@
 const char *
 HttpseCode_strerror(HttpseCode code)
 {
-	if(code < HTTPSE_OBSOLETE)
-	{
-		return curl_easy_strerror((CURLcode) code);
-	}
-
 	switch(code)
 	{
+	/* Remark: handle non curl-specified error first */
 	case HTTPSE_STATUS_CODE_MISMATCH:
 		return "Status code mismatch";
 	
@@ -31,8 +27,17 @@ HttpseCode_strerror(HttpseCode code)
 	case HTTPSE_MIXED_CONTENT:
 		return "Mixed content blocking (MCB) tiggered";
 
-	default:
+	case HTTPSE_ERROR_UNKNOWN:
 		return "Unknown error";
+
+
+	/* Remark: handle curl specified error */
+	case CURLE_PEER_FAILED_VERIFICATION:
+		/* See https://github.com/EFForg/https-everywhere/pull/8973 */
+		return "SSL peer certificate was not OK";
+
+	default:
+		return curl_easy_strerror((CURLcode) code);
 	}
 
 	/* Remark: Unreachable code */
