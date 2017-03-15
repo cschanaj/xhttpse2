@@ -5,7 +5,7 @@ SOURCES=HttpseVector.c HttpseRequest.c HttpseCode.c ./modules/StatusCode.c \
 ./modules/SecureFallback.c ./modules/DifferentContent.c \
 ./modules/MixedContent.c HttpseXData.c HttpseRuleset.c Main.c
 OBJECTS=$(SOURCES:.c=.o)
-C_LIB=-lcurl -lgumbo -lpthread
+C_LIB=-lm -lcurl -lgumbo -lpthread
 EXECUTABLE=xhttpse
 
 all: $(SOURCES) $(EXECUTABLE)
