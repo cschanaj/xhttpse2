@@ -15,7 +15,7 @@ httpse_check_status_code(const HttpseTData *tdata)
 	{
 		switch(cp/ 100)
 		{
-		/* Remark: unable to recieve HTTP response code, skip tests */
+		/* Remark: unable to retrieve HTTP response code, skip tests */
 		case 0:
 
 		/* Remark: everything is OK */
