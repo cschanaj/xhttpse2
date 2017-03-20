@@ -9,6 +9,9 @@ HttpseCode_strerror(HttpseCode code)
 	case HTTPSE_STATUS_CODE_MISMATCH:
 		return "Status code mismatch";
 	
+	case HTTPSE_SSL_INCOMPLETE_CERT_CHAIN:
+		return "Incomplete certificate chain error";
+	
 	case HTTPSE_STATUS_CODE_4XX:
 		return "4xx client error";
 	

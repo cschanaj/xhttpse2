@@ -89,6 +89,11 @@ typedef struct HttpseRequest
 	CURL *curl;
 
 	/**
+	 * Error buffer to store the error message.
+	 */
+	char errbuf[CURL_ERROR_SIZE];
+
+	/**
 	 * Pointer to pass to libcurl write callback.
 	 */
 	HttpseVector *userp;

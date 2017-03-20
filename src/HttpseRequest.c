@@ -33,6 +33,7 @@ HttpseRequest_init(const char *url, const HttpseRequestOptions *options)
 
 	/* FIXME: Undocumented behaviors */
 	HTTPSE_CURL_SETOPT(rq->curl, URL, rq->url);
+	HTTPSE_CURL_SETOPT(rq->curl, ERRORBUFFER, rq->errbuf);
 	HTTPSE_CURL_SETOPT(rq->curl, FOLLOWLOCATION, 1L);
 	HTTPSE_CURL_SETOPT(rq->curl, SSL_VERIFYPEER, 1L);
 	HTTPSE_CURL_SETOPT(rq->curl, WRITEDATA, rq->userp);

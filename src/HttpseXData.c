@@ -51,6 +51,11 @@ HttpseXData_perform(void *xdatap)
 	{
 		if(HTTPSE_OK != (retval = HttpseRequest_perform(tdata->rs)))
 		{
+			if(0 == strcmp(tdata->rs->errbuf, "SSL certificate problem: "
+				"unable to get local issuer certificate"))
+			{
+				retval = HTTPSE_SSL_INCOMPLETE_CERT_CHAIN;
+			}
 			break;
 		}
 
