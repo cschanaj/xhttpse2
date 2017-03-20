@@ -48,6 +48,19 @@ httpse_check_different_content(const HttpseTData *tdata)
 {
 	size_t i = 0;
 
+	/* Remark: if effective URL are the same, no diff content */
+	const char *urls = NULL;
+	const char *urlp = NULL;
+
+	curl_easy_getinfo(tdata->rs->curl, CURLINFO_EFFECTIVE_URL, &urls);
+	curl_easy_getinfo(tdata->rp->curl, CURLINFO_EFFECTIVE_URL, &urlp);
+
+	if(urls && urlp && 0 == strcmp(urls, urlp))
+	{
+		return HTTPSE_OK;
+	}
+
+	/* Remark: compare HTML DOM objects */
 	double tag_pts[HTTPSE_TAG_VECTOR_SZ];
 	double tag_ptp[HTTPSE_TAG_VECTOR_SZ];
 
