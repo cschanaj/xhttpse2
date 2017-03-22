@@ -201,11 +201,20 @@ HttpseRuleset_perform2(HttpseRuleset *ru)
 
 	/* Comment content
 	 */
-	if(i < xdatalen)
+	if(i < xdatalen && xdata[xdatalen - 1].error > CURLE_COULDNT_RESOLVE_HOST)
 	{
 		HttpseVector_append1(cformats[0], v2);
 		while(i < xdatalen)
 		{
+			if(xdata[i].error == CURLE_COULDNT_RESOLVE_HOST)
+			{
+				/* Remark: Do not include hosts that couldn't be resolved
+				 * https://github.com/EFForg/https-everywhere/pull/9163
+				 */
+				++i;
+				continue;
+			}
+
 			const char *msg = HttpseCode_strerror(xdata[i].error);
 
 			snprintf(lbuf, HTTPSE_XDATA_BUFSZ, cformats[1], msg);
