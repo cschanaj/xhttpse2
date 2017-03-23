@@ -60,6 +60,14 @@ httpse_check_different_content(const HttpseTData *tdata)
 		return HTTPSE_OK;
 	}
 
+
+	/* Remark: if strcmp == 0, no diff content */
+	if(0 == strcmp(tdata->rs->userp->c_str, tdata->rp->userp->c_str))
+	{
+		return HTTPSE_OK;
+	}
+
+
 	/* Remark: compare HTML DOM objects */
 	double tag_pts[HTTPSE_TAG_VECTOR_SZ];
 	double tag_ptp[HTTPSE_TAG_VECTOR_SZ];
