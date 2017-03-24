@@ -62,9 +62,13 @@ httpse_check_different_content(const HttpseTData *tdata)
 
 
 	/* Remark: if strcmp == 0, no diff content */
-	if(0 == strcmp(tdata->rs->userp->c_str, tdata->rp->userp->c_str))
+	if(tdata->rs->userp->size == tdata->rp->userp->size)
 	{
-		return HTTPSE_OK;
+		if(0 == memcmp(tdata->rs->userp->data, tdata->rp->userp->data, 
+			tdata->rs->userp->size))
+		{
+			return HTTPSE_OK;
+		}
 	}
 
 
