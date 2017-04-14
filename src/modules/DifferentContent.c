@@ -7,10 +7,6 @@
 #define TAG_VECTOR_SZ 160
 #endif
 
-#ifndef MATH_PI
-#define MATH_PI 3.14159265
-#endif
-
 int 
 httpse_check_different_content1(const GumboNode *node, double *v)
 {
@@ -64,6 +60,19 @@ httpse_check_different_content(const HttpseTData *tdata)
 	}
 
 
+	/* Compare content-type */
+	const char *type_cts = NULL;
+	const char *type_ctp = NULL;
+
+	curl_easy_getinfo(tdata->rs->curl, CURLINFO_CONTENT_TYPE, &type_cts);
+	curl_easy_getinfo(tdata->rp->curl, CURLINFO_CONTENT_TYPE, &type_ctp);
+
+	if(type_cts && type_ctp && 0 != strcmp(type_cts, type_ctp))
+	{
+		return HTTPSE_DIFFERENT_CONTENT;
+	}
+
+
 	/* Compute the cosine distance of the HTML tags */
 	size_t i = 0; 
 	const char *html = NULL;
@@ -72,7 +81,6 @@ httpse_check_different_content(const HttpseTData *tdata)
 	double tag_vsl = 0.0;
 	double tag_vpl = 0.0;
 
-	double theta = 0.0;
 	double distance = 0.0;
 
 	double tag_vs[TAG_VECTOR_SZ];
@@ -129,14 +137,11 @@ httpse_check_different_content(const HttpseTData *tdata)
 
 	for(i = 0; i < TAG_VECTOR_SZ; ++i)
 	{
-		double udiff = tag_vs[i]/ tag_vsl - tag_vp[i]/ tag_vpl;
-		distance += pow(udiff, 2.0);
+		double udiff = tag_vs[i] * tag_vp[i];
+		distance += (udiff / (tag_vsl * tag_vpl));
 	}
 
-	distance = sqrt(distance);
-	theta = acos(distance);
-
-	if(distance >= 0.5 || theta >= MATH_PI/ 4.0)
+	if(distance <= 0.707107)
 	{
 		return HTTPSE_DIFFERENT_CONTENT;
 	}
