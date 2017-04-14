@@ -3,41 +3,35 @@
 
 #include <math.h>
 
-/* Remark: Levenshtein distance should have been used. Yet,
- * due to the sizes of the response bodies, this is not really
- * practical. If you know any fast implementation of the distance
- * function, on 30KB+ text content, feel free to submit a PR to 
- * replace the current implementation.
- * 
- * Now we the Euclidean Distance of the tags.
- * FIXME: It is possible that http(s) serve different content, but
- * the secure version is working correctly (false-positive).
- */
-
-
-#ifndef HTTPSE_TAG_VECTOR_SZ
-#define HTTPSE_TAG_VECTOR_SZ 160
+#ifndef TAG_VECTOR_SZ
+#define TAG_VECTOR_SZ 160
 #endif
 
-int
-httpse_check_different_content1(const GumboNode *node, double *tag_pt)
+#ifndef MATH_PI
+#define MATH_PI 3.14159265
+#endif
+
+int 
+httpse_check_different_content1(const GumboNode *node, double *v)
 {
-	if(!tag_pt)
+	if(!v)
 	{
 		return 0;
 	}
 
-	/* Remark: root == NULL iff recursion ends */
 	if(node && node->type == GUMBO_NODE_ELEMENT)
 	{
-		tag_pt[node->v.element.tag] += 1.0;
+		v[node->v.element.tag] += 1.0;
 
 		size_t i, children_len = node->v.element.children.length;
 		const GumboNode **children = (void *) node->v.element.children.data;
 
 		for(i = 0; i < children_len; ++i)
 		{
-			httpse_check_different_content1(children[i], tag_pt);
+			if(0 == httpse_check_different_content1(children[i], v))
+			{
+				return 0;
+			}
 		}
 	}
 	return 1;
@@ -46,9 +40,7 @@ httpse_check_different_content1(const GumboNode *node, double *tag_pt)
 HttpseCode
 httpse_check_different_content(const HttpseTData *tdata)
 {
-	size_t i = 0;
-
-	/* Remark: if effective URL are the same, no diff content */
+	/* Compare the effective URL(s) */
 	const char *urls = NULL;
 	const char *urlp = NULL;
 
@@ -61,10 +53,10 @@ httpse_check_different_content(const HttpseTData *tdata)
 	}
 
 
-	/* Remark: if strcmp == 0, no diff content */
+	/* Simple memcmp() of the response data */
 	if(tdata->rs->userp->size == tdata->rp->userp->size)
 	{
-		if(0 == memcmp(tdata->rs->userp->data, tdata->rp->userp->data, 
+		if(0 == memcmp(tdata->rs->userp->data, tdata->rp->userp->data,
 			tdata->rs->userp->size))
 		{
 			return HTTPSE_OK;
@@ -72,28 +64,33 @@ httpse_check_different_content(const HttpseTData *tdata)
 	}
 
 
-	/* Remark: compare HTML DOM objects */
-	double tag_pts[HTTPSE_TAG_VECTOR_SZ];
-	double tag_ptp[HTTPSE_TAG_VECTOR_SZ];
-
-	double distance = 0.0;
-
-	const char  *html   = NULL;
+	/* Compute the cosine distance of the HTML tags */
+	size_t i = 0; 
+	const char *html = NULL;
 	GumboOutput *output = NULL;
 
-	for(i = 0; i < HTTPSE_TAG_VECTOR_SZ; ++i)
+	double tag_vsl = 0.0;
+	double tag_vpl = 0.0;
+
+	double theta = 0.0;
+	double distance = 0.0;
+
+	double tag_vs[TAG_VECTOR_SZ];
+	double tag_vp[TAG_VECTOR_SZ];
+
+	for(i = 0; i < TAG_VECTOR_SZ; ++i)
 	{
-		tag_pts[i] = tag_ptp[i] = 0.0;
+		tag_vs[i] = tag_vp[i] = 0.0;
 	}
 
 	do
 	{
-		html   = tdata->rs->userp->size ? tdata->rs->userp->c_str : "";
-		output = gumbo_parse(html);
+		html   = tdata->rs->userp->size ? tdata->rs->userp->c_str : NULL;
+		output = html ? gumbo_parse(html) : NULL;
 
 		if(output && output->root)
 		{
-			if(!httpse_check_different_content1(output->root, tag_pts))
+			if(!httpse_check_different_content1(output->root, tag_vs))
 			{
 				return HTTPSE_ERROR_UNKNOWN;
 			}
@@ -103,12 +100,12 @@ httpse_check_different_content(const HttpseTData *tdata)
 
 	do
 	{
-		html   = tdata->rp->userp->size ? tdata->rp->userp->c_str : "";
-		output = gumbo_parse(html);
+		html   = tdata->rp->userp->size ? tdata->rp->userp->c_str : NULL;
+		output = html ? gumbo_parse(html) : NULL;
 
 		if(output && output->root)
 		{
-			if(!httpse_check_different_content1(output->root, tag_ptp))
+			if(!httpse_check_different_content1(output->root, tag_vp))
 			{
 				return HTTPSE_ERROR_UNKNOWN;
 			}
@@ -116,48 +113,34 @@ httpse_check_different_content(const HttpseTData *tdata)
 		}
 	} while(0);
 
-	/* Remark: vector length */
-	double tag_pts_len = 0.0;
-	double tag_ptp_len = 0.0;
-
-	for(i = 0; i < HTTPSE_TAG_VECTOR_SZ; ++i)
+	for(i = 0; i < TAG_VECTOR_SZ; ++i)
 	{
-		tag_pts_len += pow(tag_pts[i], 2);
-		tag_ptp_len += pow(tag_ptp[i], 2);
+		tag_vsl += pow(tag_vs[i], 2.0);
+		tag_vpl += pow(tag_vp[i], 2.0);
 	}
 
-	tag_pts_len = sqrt(tag_pts_len);
-	tag_ptp_len = sqrt(tag_ptp_len);
+	tag_vsl = sqrt(tag_vsl);
+	tag_vpl = sqrt(tag_vpl);
 
-	/* Remark: both pages do not have any node */
-	if(tag_pts_len == 0.0 && tag_ptp_len == 0.0)
-	{
-		return HTTPSE_OK;
-	}
-
-	/* Remark: only 1 pages have node */
-	if(tag_pts_len == 0.0 || tag_ptp_len == 0.0)
+	if(tag_vsl == 0.0 || tag_vpl == 0.0)
 	{
 		return HTTPSE_DIFFERENT_CONTENT;
 	}
 
-	/* Remark: both pages have some nodes */
-	for(i = 0; i < HTTPSE_TAG_VECTOR_SZ; ++i)
+	for(i = 0; i < TAG_VECTOR_SZ; ++i)
 	{
-		tag_pts[i] /= tag_pts_len;
-		tag_ptp[i] /= tag_ptp_len;
+		double udiff = tag_vs[i]/ tag_vsl - tag_vp[i]/ tag_vpl;
+		distance += pow(udiff, 2.0);
 	}
 
+	distance = sqrt(distance);
+	theta = acos(distance);
 
-	/* Remark: Compute distance between 2 vectors */
-	for(i = 0; i < HTTPSE_TAG_VECTOR_SZ; ++i)
-	{
-		distance += pow(tag_pts[i] - tag_ptp[i], 2);
-	}
-
-	if(distance >= 0.5)
+	if(distance >= 0.5 || theta >= MATH_PI/ 4.0)
 	{
 		return HTTPSE_DIFFERENT_CONTENT;
 	}
 	return HTTPSE_OK;
 }
+
+#undef TAG_VECTOR_SZ
