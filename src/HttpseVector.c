@@ -35,7 +35,7 @@ HttpseVector_append(const void *ptr, size_t size, size_t nmemb,
 
 	if(ctx->size + size * (nmemb + 1) > ctx->max_size)
 	{
-		size_t msz = MAX((ctx->max_size + size * (nmemb + 1)) * 2L, 1024L);
+		size_t msz = ctx->max_size + MAX(size * (nmemb + 1), 2048L);
 		void *data = malloc(msz);
 
 		if(!data)
