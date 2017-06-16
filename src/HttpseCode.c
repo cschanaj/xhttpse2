@@ -28,7 +28,7 @@ HttpseCode_strerror(HttpseCode code)
 		return "Different content";
 	
 	case HTTPSE_MIXED_CONTENT:
-		return "Mixed content blocking (MCB) tiggered";
+		return "Mixed content blocking (MCB) triggered";
 
 	case HTTPSE_ERROR_UNKNOWN:
 		return "Unknown error";
