@@ -137,7 +137,7 @@ HttpseRuleset_perform2(HttpseRuleset *ru)
 	static const char *cformats[] = {
 		"<!--\n\tNon-functional hosts",
 		"\n\t\t%s:\n",
-		"\t\t\t - %s\n",
+		"\t\t- %s\n",
 		"-->\n"
 	};
 
