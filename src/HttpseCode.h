@@ -48,6 +48,11 @@ typedef enum HttpseCode
 	HTTPSE_SSL_INCOMPLETE_CERT_CHAIN,
 
 	/**
+	 * Self-signed certificate chain (likely CACert)
+	 */
+	HTTPSE_SSL_SELF_SIGNED_CERT_CHAIN,
+
+	/**
 	 * HTTP(s) give different HTTP status code.
 	 */
 	HTTPSE_STATUS_CODE_MISMATCH,

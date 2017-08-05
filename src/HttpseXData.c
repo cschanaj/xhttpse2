@@ -56,6 +56,12 @@ HttpseXData_perform(void *xdatap)
 			{
 				retval = HTTPSE_SSL_INCOMPLETE_CERT_CHAIN;
 			}
+
+			if(0 == strcmp(tdata->rs->errbuf, "SSL certificate problem: "
+				"self signed certificate in certificate chain"))
+			{
+				retval = HTTPSE_SSL_SELF_SIGNED_CERT_CHAIN;
+			}
 			break;
 		}
 
