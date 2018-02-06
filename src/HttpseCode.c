@@ -25,7 +25,7 @@ HttpseCode_strerror(HttpseCode code)
 		return "Non-200/3xx HTTP status code";
 
 	case HTTPSE_SECURE_FALLBACK:
-		return "Secure connection redirects to plaintext";
+		return "Redirects to HTTP";
 	
 	case HTTPSE_DIFFERENT_CONTENT:
 		return "Different content";
