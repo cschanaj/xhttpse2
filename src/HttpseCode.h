@@ -43,6 +43,11 @@ typedef enum HttpseCode
 	HTTPSE_OBSOLETE = CURL_LAST,
 
 	/**
+	 * Host is HSTS preloaded
+	 */
+	HTTPSE_HSTS_PRELOADED,
+
+	/**
 	 * Incomplete certificate chain
 	 */
 	HTTPSE_SSL_INCOMPLETE_CERT_CHAIN,

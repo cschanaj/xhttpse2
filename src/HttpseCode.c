@@ -6,6 +6,9 @@ HttpseCode_strerror(HttpseCode code)
 	switch(code)
 	{
 	/* Remark: handle non curl-specified error first */
+	case HTTPSE_HSTS_PRELOADED:
+		return "HSTS preloaded";
+
 	case HTTPSE_STATUS_CODE_MISMATCH:
 		return "Status code mismatch";
 	
