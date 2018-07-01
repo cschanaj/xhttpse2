@@ -40,8 +40,14 @@ HttpseXData_perform(void *xdatap)
 
 	if (strstr(hsts->rs->userp->c_str, "\"status\": \"preloaded\"") != NULL) {
 		xdata->error = HTTPSE_HSTS_PRELOADED;
+
+		hsts->rs = HttpseRequest_cleanup(hsts->rs);
+		free(hsts);
 		return NULL;
 	}
+
+	hsts->rs = HttpseRequest_cleanup(hsts->rs);
+	free(hsts);
 
 	snprintf(tdata->urlp, HTTPSE_XDATA_BUFSZ, "http://%s", xdata->host);
 	snprintf(tdata->urls, HTTPSE_XDATA_BUFSZ, "https://%s", xdata->host);
