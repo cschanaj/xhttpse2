@@ -47,6 +47,7 @@ print_usage(const char *me)
 	" -o, --output FILE               Write output to FILE instead of stdout\n"
 	"     --platform PLATFORM         Set PLATFORM the output ruleset platform\n"
 	"     --securecookie              Enable securecookie flag in the output\n"
+	"     --skip-hsts-check           Whether to skip HSTS check"
 	"\n"
 	"Options (libcurl)\n"
 	"     --capath DIR                CA directory to verify peer against (SSL)\n"
@@ -85,6 +86,7 @@ httpse_getopt_long(int argc, char **argv, HttpseRulesetOptions *roptions)
 		/* misc */
 		{"num-threads",     required_argument, NULL, 264},
 		{"help",            no_argument,       NULL, 'h'},
+		{"skip-hsts-check", no_argument,       NULL, 265},
 		{0, 0, 0, 0}
 	};
 
@@ -150,6 +152,10 @@ httpse_getopt_long(int argc, char **argv, HttpseRulesetOptions *roptions)
 
 		case 264:
 			roptions->num_threads = atol(optarg);
+			break;
+		
+		case 265:
+			roptions->options.skip_hsts_check = 1L;
 			break;
 
 		default:
