@@ -31,23 +31,25 @@ HttpseXData_perform(void *xdatap)
 		return NULL;
 	}
 
-	/* HSTS preload check */
-	HttpseTData *hsts = malloc(sizeof(*hsts));
-	snprintf(hsts->urls, HTTPSE_XDATA_BUFSZ, "https://hstspreload.org/api/v2/status?domain=%s", xdata->host);
+	if (!xdata->options->skip_hsts_check) {
+		/* HSTS preload check */
+		HttpseTData *hsts = malloc(sizeof(*hsts));
+		snprintf(hsts->urls, HTTPSE_XDATA_BUFSZ, "https://hstspreload.org/api/v2/status?domain=%s", xdata->host);
 
-	hsts->rs = HttpseRequest_init(hsts->urls, xdata->options);
-	HttpseRequest_perform(hsts->rs);
+		hsts->rs = HttpseRequest_init(hsts->urls, xdata->options);
+		HttpseRequest_perform(hsts->rs);
 
-	if (strstr(hsts->rs->userp->c_str, "\"status\": \"preloaded\"") != NULL) {
-		xdata->error = HTTPSE_HSTS_PRELOADED;
+		if (strstr(hsts->rs->userp->c_str, "\"status\": \"preloaded\"") != NULL) {
+			xdata->error = HTTPSE_HSTS_PRELOADED;
+
+			hsts->rs = HttpseRequest_cleanup(hsts->rs);
+			free(hsts);
+			return NULL;
+		}
 
 		hsts->rs = HttpseRequest_cleanup(hsts->rs);
 		free(hsts);
-		return NULL;
 	}
-
-	hsts->rs = HttpseRequest_cleanup(hsts->rs);
-	free(hsts);
 
 	snprintf(tdata->urlp, HTTPSE_XDATA_BUFSZ, "http://%s", xdata->host);
 	snprintf(tdata->urls, HTTPSE_XDATA_BUFSZ, "https://%s", xdata->host);

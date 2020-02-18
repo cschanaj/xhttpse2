@@ -59,6 +59,11 @@ typedef struct HttpseRequestOptions
 	 * libcurl verbose mode on/ off
 	 */
 	long verbose;
+
+	/**
+	 * Whether to skip HSTS check
+	 */
+	long skip_hsts_check;
 } HttpseRequestOptions;
 
 #ifndef kHttpseRequestOptions
@@ -70,6 +75,7 @@ typedef struct HttpseRequestOptions
     .tr_encoding = 0L,                                \
     .useragent = "libcurl/" LIBCURL_VERSION,          \
     .verbose = 0L,                                    \
+    .skip_hsts_check = 0L,                            \
 }
 #endif
 
