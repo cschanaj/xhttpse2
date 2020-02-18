@@ -69,7 +69,7 @@ httpse_getopt_long(int argc, char **argv, HttpseRulesetOptions *roptions)
 	struct option coptions[] = {
 		/* options */
 		{"name",            required_argument, NULL, 257},
-		{"ouput",           required_argument, NULL, 'o'},
+		{"output",          required_argument, NULL, 'o'},
 		{"platform",        required_argument, NULL, 258},
 		{"securecookie",    no_argument,       NULL, 259},
 
