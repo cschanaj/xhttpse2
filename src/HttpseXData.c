@@ -82,6 +82,11 @@ HttpseXData_perform(void *xdatap)
 			{
 				retval = HTTPSE_SSL_SELF_SIGNED_CERT_CHAIN;
 			}
+
+			if(strstr(tdata->rs->errbuf, "SSL routines:ssl_choose_client_version:unsupported protocol"))
+			{
+				retval = HTTPSE_SSL_WEAK_ENCRYPTION;
+			}
 			break;
 		}
 

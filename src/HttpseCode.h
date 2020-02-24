@@ -58,6 +58,11 @@ typedef enum HttpseCode
 	HTTPSE_SSL_SELF_SIGNED_CERT_CHAIN,
 
 	/**
+	 * Site uses weak encryption, e.g. TLS 1.1 or earlier.
+	 */
+	HTTPSE_SSL_WEAK_ENCRYPTION,
+
+	/**
 	 * HTTP(s) give different HTTP status code.
 	 */
 	HTTPSE_STATUS_CODE_MISMATCH,

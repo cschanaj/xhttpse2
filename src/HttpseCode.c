@@ -17,6 +17,9 @@ HttpseCode_strerror(HttpseCode code)
 	
 	case HTTPSE_SSL_SELF_SIGNED_CERT_CHAIN:
 		return "Self-signed certificate chain error";
+
+	case HTTPSE_SSL_WEAK_ENCRYPTION:
+		return "Site uses weak encryption (TLSv1.1 or earlier)";
 	
 	case HTTPSE_STATUS_CODE_4XX:
 		return "4xx client error";
