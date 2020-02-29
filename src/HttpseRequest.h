@@ -64,6 +64,11 @@ typedef struct HttpseRequestOptions
 	 * Whether to skip HSTS check
 	 */
 	long skip_hsts_check;
+
+	/**
+	 * Minimal TLS version (0 = TLS 1.0, 1 = TLS 1.1, 2 = TLS 1.2)
+	 */
+	long min_tls;
 } HttpseRequestOptions;
 
 #ifndef kHttpseRequestOptions
@@ -76,6 +81,7 @@ typedef struct HttpseRequestOptions
     .useragent = "libcurl/" LIBCURL_VERSION,          \
     .verbose = 0L,                                    \
     .skip_hsts_check = 0L,                            \
+    .min_tls = 2L,                                    \
 }
 #endif
 

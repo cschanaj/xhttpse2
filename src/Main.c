@@ -57,6 +57,9 @@ print_usage(const char *me)
 	"     --tr-encoding               Request compressed transfer encoding\n"
 	" -A, --useragent STRING          Send User-Agent STRING to server\n"
 	" -v, --verbose                   Enable libcurl verbose mode\n"
+	" -1, --tlsv1, --tlsv1.0          Set minimum TLS version to 1.0\n"
+	"     --tlsv1.1                   Set minimum TLS version to 1.1\n"
+	"     --tlsv1.2                   Set minimum TLS version to 1.2 (default)\n"
 	"\n"
 	"Misc.\n"
 	"     --num-threads NUM           Use NUM threads whenever possible\n"
@@ -76,12 +79,16 @@ httpse_getopt_long(int argc, char **argv, HttpseRulesetOptions *roptions)
 
 		/* libcurl options */
 		{"capath",          required_argument, NULL, 260},
-		{"compressed",       no_argument,      NULL, 261},
+		{"compressed",      no_argument,       NULL, 261},
 		{"connect-timeout", required_argument, NULL, 262},
 		{"max-time",        required_argument, NULL, 'm'},
 		{"tr-encoding",     no_argument,       NULL, 263},
 		{"useragent",       required_argument, NULL, 'A'},
 		{"verbose",         no_argument,       NULL, 'v'},
+		{"tlsv1",           no_argument,       NULL, '1'},
+		{"tlsv1.0",         no_argument,       NULL, '1'},
+		{"tlsv1.1",         no_argument,       NULL, 266},
+		{"tlsv1.2",         no_argument,       NULL, 267},
 
 		/* misc */
 		{"num-threads",     required_argument, NULL, 264},
@@ -156,6 +163,18 @@ httpse_getopt_long(int argc, char **argv, HttpseRulesetOptions *roptions)
 		
 		case 265:
 			roptions->options.skip_hsts_check = 1L;
+			break;
+
+		case '1':
+			roptions->options.min_tls = 0L;
+			break;
+
+		case 266:
+			roptions->options.min_tls = 1L;
+			break;
+
+		case 267:
+			roptions->options.min_tls = 2L;
 			break;
 
 		default:
