@@ -1,1 +1,5 @@
 /bin
+
+/src/*.o
+/src/modules/*.o
+/src/xhttpse
