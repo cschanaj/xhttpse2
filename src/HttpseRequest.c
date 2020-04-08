@@ -42,12 +42,6 @@ HttpseRequest_init(const char *url, const HttpseRequestOptions *options)
 	 * Remark: See https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls
 	 */
 	HTTPSE_CURL_SETOPT(rq->curl, SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-
-	/* Use Mozilla SSL Configuration Generator, Immediate Mozilla Configuration
-	 * Remark: See https://ssl-config.mozilla.org/
-	 */
-	HTTPSE_CURL_SETOPT(rq->curl, SSL_CIPHER_LIST, "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384");
-
 	HTTPSE_CURL_SETOPT(rq->curl, WRITEDATA, rq->userp);
 	HTTPSE_CURL_SETOPT(rq->curl, WRITEFUNCTION, HttpseVector_append);
 	HTTPSE_CURL_SETOPT(rq->curl, HEADERDATA, rq->hd);
