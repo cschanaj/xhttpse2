@@ -37,11 +37,34 @@ HttpseRequest_init(const char *url, const HttpseRequestOptions *options)
 	HTTPSE_CURL_SETOPT(rq->curl, FOLLOWLOCATION, 1L);
 	HTTPSE_CURL_SETOPT(rq->curl, SSL_VERIFYPEER, 1L);
 
-
 	/* In March of 2020, Firefox will disable support for TLS 1.0 and TLS 1.1.
 	 * Remark: See https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls
 	 */
-	HTTPSE_CURL_SETOPT(rq->curl, SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+
+	long tlsv;
+
+	switch (options->min_tls) {
+		case 0L:
+			tlsv = CURL_SSLVERSION_TLSv1_0;
+			break;
+
+		case 1L:
+			tlsv = CURL_SSLVERSION_TLSv1_1;
+			break;
+
+		case 2L:
+		default:
+			tlsv = CURL_SSLVERSION_TLSv1_2;
+			break;
+	}
+
+	HTTPSE_CURL_SETOPT(rq->curl, SSLVERSION, tlsv);
+
+	/* Use Mozilla SSL Configuration Generator, Immediate Mozilla Configuration
+	 * Remark: See https://ssl-config.mozilla.org/
+	 */
+	HTTPSE_CURL_SETOPT(rq->curl, SSL_CIPHER_LIST, "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384");
+
 	HTTPSE_CURL_SETOPT(rq->curl, WRITEDATA, rq->userp);
 	HTTPSE_CURL_SETOPT(rq->curl, WRITEFUNCTION, HttpseVector_append);
 	HTTPSE_CURL_SETOPT(rq->curl, HEADERDATA, rq->hd);
