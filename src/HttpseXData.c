@@ -37,9 +37,11 @@ HttpseXData_perform(void *xdatap)
 		snprintf(hsts->urls, HTTPSE_XDATA_BUFSZ, "https://hstspreload.org/api/v2/status?domain=%s", xdata->host);
 
 		hsts->rs = HttpseRequest_init(hsts->urls, xdata->options);
-		HttpseRequest_perform(hsts->rs);
 
-		if (strstr(hsts->rs->userp->c_str, "\"status\": \"preloaded\"") != NULL) {
+		if (
+			(HTTPSE_OK == HttpseRequest_perform(hsts->rs)) &&
+			(strstr(hsts->rs->userp->c_str, "\"status\": \"preloaded\"") != NULL)
+		) {
 			xdata->error = HTTPSE_HSTS_PRELOADED;
 
 			hsts->rs = HttpseRequest_cleanup(hsts->rs);
