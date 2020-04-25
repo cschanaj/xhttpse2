@@ -20,7 +20,7 @@ HttpseXData_perform(void *xdatap)
 	HttpseXData *xdata = xdatap;
 	HttpseTData *tdata = NULL;
 
-	if(NULL == xdata)
+	if(!xdata)
 	{
 		return NULL;
 	}
@@ -50,7 +50,8 @@ HttpseXData_perform(void *xdatap)
 		}
 	}
 
-	if(NULL == (tdata = malloc(sizeof(HttpseTData))))
+	tdata = malloc(sizeof(*tdata));
+	if(!tdata)
 	{
 		xdata->error = HTTPSE_ERROR_UNKNOWN;
 		return NULL;
