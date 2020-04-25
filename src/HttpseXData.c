@@ -33,28 +33,47 @@ HttpseXData_perform(void *xdatap)
 
 	if (!xdata->options->skip_hsts_check) {
 		/* HSTS preload check */
-		HttpseTData *hsts = malloc(sizeof(*hsts));
-		snprintf(hsts->urls, HTTPSE_XDATA_BUFSZ, "https://hstspreload.org/api/v2/status?domain=%s", xdata->host);
+		HttpseVector *hstspreload_org_endpoint_url = HttpseVector_init();
+		HttpseVector_append1("https://hstspreload.org/api/v2/status?domain=", hstspreload_org_endpoint_url);
+		HttpseVector_append1(xdata->host, hstspreload_org_endpoint_url);
 
-		hsts->rs = HttpseRequest_init(hsts->urls, xdata->options);
+		HttpseRequest *hsts_check_request = HttpseRequest_init(hstspreload_org_endpoint_url->c_str, xdata->options);
 
 		if (
-			(HTTPSE_OK == HttpseRequest_perform(hsts->rs)) &&
-			(strstr(hsts->rs->userp->c_str, "\"status\": \"preloaded\"") != NULL)
+			(HTTPSE_OK == HttpseRequest_perform(hsts_check_request)) &&
+			(NULL != strstr(hsts_check_request->userp->c_str, "\"status\": \"preloaded\""))
 		) {
+			// domain is preloaded
 			xdata->error = HTTPSE_HSTS_PRELOADED;
-
-			hsts->rs = HttpseRequest_cleanup(hsts->rs);
-			free(hsts);
-			return NULL;
 		}
 
-		hsts->rs = HttpseRequest_cleanup(hsts->rs);
-		free(hsts);
+		/* cleanup */
+		hsts_check_request = HttpseRequest_cleanup(hsts_check_request);
+		hstspreload_org_endpoint_url = HttpseVector_cleanup(hstspreload_org_endpoint_url);
+		
+		if (HTTPSE_HSTS_PRELOADED == xdata->error) {
+			return NULL;
+		}
 	}
 
-	snprintf(tdata->urlp, HTTPSE_XDATA_BUFSZ, "http://%s", xdata->host);
-	snprintf(tdata->urls, HTTPSE_XDATA_BUFSZ, "https://%s", xdata->host);
+	do {
+		// construct test URLs safely
+		// http://example.com/
+		HttpseVector *http_url_with_host = HttpseVector_init();
+		HttpseVector_append1("http://", http_url_with_host);
+		HttpseVector_append1(xdata->host, http_url_with_host);
+
+		strncpy(tdata->urlp, http_url_with_host->c_str, HTTPSE_XDATA_BUFSZ);
+		http_url_with_host = HttpseVector_cleanup(http_url_with_host);
+
+		// https://example.com/
+		HttpseVector *https_url_with_host = HttpseVector_init();
+		HttpseVector_append1("https://", https_url_with_host);
+		HttpseVector_append1(xdata->host, https_url_with_host);
+
+		strncpy(tdata->urls, https_url_with_host->c_str, HTTPSE_XDATA_BUFSZ);
+		https_url_with_host = HttpseVector_cleanup(https_url_with_host);
+	} while(0);
 
 	tdata->rp = HttpseRequest_init(tdata->urlp, xdata->options);
 	tdata->rs = HttpseRequest_init(tdata->urls, xdata->options);

@@ -20,6 +20,8 @@
 #include "HttpseCode.h"
 #include "HttpseRequest.h"
 
+#include "pthread.h"
+
 #ifndef HTTPSE_XDATA_H
 #define HTTPSE_XDATA_H
 
