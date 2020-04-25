@@ -48,7 +48,7 @@ parseXmlByRegex(content, /^\s*-\s*([^>\n]*)$/gm, matches => {
 
 parseXmlByRegex(
   content,
-  /^\s*<target\s*host="([^"]*)"\s*\s*\/>$/gm,
+  /^\s*<target\s*host="([^"]*)"\s*\/>$/gm,
   matches => {
     domains.push(matches[1]);
   }
