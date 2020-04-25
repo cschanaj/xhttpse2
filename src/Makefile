@@ -1,4 +1,4 @@
-CC=gcc
+CC ?= gcc
 CFLAGS=-c -I. -I./modules/ -D_GNU_SOURCE
 DFLAGS=-I. -D_GNU_SOURCE
 SOURCES=HttpseVector.c HttpseRequest.c HttpseCode.c ./modules/StatusCode.c \

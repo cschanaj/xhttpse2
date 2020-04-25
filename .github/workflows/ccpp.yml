@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ master ]
 
+strategy:
+  compiler: [gcc, clang]
+
 jobs:
   build:
 
@@ -16,4 +19,6 @@ jobs:
     - name: install build dependencies
       run: sudo apt-get install libssl-dev libcurl4-openssl-dev libgumbo-dev
     - name: make
+      env:
+        CC: ${{ matrix.compiler }}
       run: cd src/ && make
