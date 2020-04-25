@@ -6,14 +6,20 @@ on:
   pull_request:
     branches: [ master ]
 
+
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    
+    runs-on: [ubuntu-latest]
+    
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
     steps:
     - uses: actions/checkout@v2
-    - name: cd src/
-      run: cd src/
-    - name: make
-      run: make
+    - name: Install build dependencies
+      run: sudo apt-get install libssl-dev libcurl4-openssl-dev libgumbo-dev
+    - name: Make
+      env:
+        CC: ${{ matrix.compiler }}
+      run: cd src/ && make
