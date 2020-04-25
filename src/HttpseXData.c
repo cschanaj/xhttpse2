@@ -16,18 +16,12 @@ HttpseXData_compare(const void *xdatap1, const void *xdatap2)
 void *
 HttpseXData_perform(void *xdatap)
 {
-	if(!xdatap)
-	{
-		return NULL;
-	}
-
 	HttpseCode retval  = HTTPSE_OK;
-	HttpseTData *tdata = malloc(sizeof(*tdata));
-	HttpseXData *xdata = xdatap;	
-	
-	if(!tdata)
+	HttpseXData *xdata = xdatap;
+	HttpseTData *tdata = NULL;
+
+	if(NULL == xdata)
 	{
-		xdata->error = HTTPSE_ERROR_UNKNOWN;
 		return NULL;
 	}
 
@@ -54,6 +48,12 @@ HttpseXData_perform(void *xdatap)
 		if (HTTPSE_HSTS_PRELOADED == xdata->error) {
 			return NULL;
 		}
+	}
+
+	if(NULL == (tdata = malloc(sizeof(HttpseTData))))
+	{
+		xdata->error = HTTPSE_ERROR_UNKNOWN;
+		return NULL;
 	}
 
 	do {
