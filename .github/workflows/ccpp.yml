@@ -1,7 +1,4 @@
 name: C/C++ CI
-strategy:
-  matrix:
-    compiler: [gcc, clang]
 
 on:
   push:
@@ -12,7 +9,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    
+    runs-on: [ubuntu-latest]
+    
     strategy:
       matrix:
         compiler: [gcc, clang]
