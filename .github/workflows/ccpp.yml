@@ -7,7 +7,8 @@ on:
     branches: [ master ]
 
 strategy:
-  compiler: [gcc, clang]
+  matrix:
+    compiler: [gcc, clang]
 
 jobs:
   build:
