@@ -1,0 +1,16 @@
+language: c
+compiler:
+  - gcc
+before_install:
+  - cd src/
+install:
+  - make
+matrix:
+  - os: linux
+    dist: bionic
+    addons:
+      apt:
+        sources:
+          - libssl-dev
+          - libcurl4-openssl-dev
+          - libgumbo-dev
