@@ -17,9 +17,9 @@ jobs:
         compiler: [gcc, clang]
     steps:
     - uses: actions/checkout@v2
-    - name: install build dependencies
+    - name: Install build dependencies
       run: sudo apt-get install libssl-dev libcurl4-openssl-dev libgumbo-dev
-    - name: make
+    - name: Make
       env:
         CC: ${{ matrix.compiler }}
       run: cd src/ && make
