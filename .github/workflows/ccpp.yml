@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: cd src/
-      run: cd src/
+    - name: install build dependencies
+      run: sudo apt-get install libssl-dev libcurl4-openssl-dev libgumbo-dev
     - name: make
-      run: make
+      run: cd src/ && make
