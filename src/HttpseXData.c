@@ -90,7 +90,7 @@ HttpseXData_perform(void *xdatap)
 
 	do
 	{
-		if(HTTPSE_OK != (retval = HttpseRequest_perform(tdata->rs)))
+		if(HTTPSE_OK != (retval = (HttpseCode) HttpseRequest_perform(tdata->rs)))
 		{
 			if(0 == strcmp(tdata->rs->errbuf, "SSL certificate problem: "
 				"unable to get local issuer certificate"))
@@ -111,7 +111,7 @@ HttpseXData_perform(void *xdatap)
 			break;
 		}
 
-		if(HTTPSE_OK != (retval = HttpseRequest_perform(tdata->rp)))
+		if(HTTPSE_OK != (retval = (HttpseCode) HttpseRequest_perform(tdata->rp)))
 		{
 			/* Remark: This host works on HTTPS only. */
 			retval = HTTPSE_OK;
