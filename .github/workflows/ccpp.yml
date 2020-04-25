@@ -8,13 +8,14 @@ on:
 
 
 jobs:
-  build:
+  build-openssl:
     
     runs-on: [ubuntu-latest]
     
     strategy:
       matrix:
         compiler: [gcc, clang]
+
     steps:
     - uses: actions/checkout@v2
     - name: Install build dependencies
@@ -23,3 +24,20 @@ jobs:
       env:
         CC: ${{ matrix.compiler }}
       run: cd src/ && make
+      
+  build-gnutls:
+    runs-on: [ubuntu-latest]
+    
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install build dependencies
+      run: sudo apt-get install libgnutls28-dev libcurl4-gnutls-dev libgumbo-dev
+    - name: Make
+      env:
+        CC: ${{ matrix.compiler }}
+      run: cd src/ && make
+      
