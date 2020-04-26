@@ -23,10 +23,10 @@ if (process.argv.length <= 2) {
   process.exit();
 }
 
-// create a backup of the input FILE
+// create a backup of the input FILE if it does not exist
 const filename = process.argv[2];
 const backupFilename = filename + ".bak";
-if (fs.existsSync(filename)) {
+if (!fs.existsSync(backupFilename)) {
   fs.copyFileSync(filename, backupFilename);
 }
 
@@ -46,15 +46,11 @@ parseXmlByRegex(content, /^\s*-\s*([^>\n]*)$/gm, matches => {
   domains.push(matches[1]);
 });
 
-parseXmlByRegex(
-  content,
-  /^\s*<target\s*host="([^"]*)"\s*\/>$/gm,
-  matches => {
-    domains.push(matches[1]);
-  }
-);
+parseXmlByRegex(content, /^\s*<target\s*host="([^"]*)"\s*\/>$/gm, matches => {
+  domains.push(matches[1]);
+});
 
-// sort domains alphabetically, from top level domains to lower ones
+// sort domains by top-level domains alphabetically, remove duplicates
 domains = domains
   .map(domain =>
     domain
@@ -68,7 +64,8 @@ domains = domains
       .split(".")
       .reverse()
       .join(".")
-  );
+  )
+  .filter((domain, index, arr) => arr.indexOf(domain, index + 1) < 0);
 
 // create temporary file
 const tmpFilename = path.join(
