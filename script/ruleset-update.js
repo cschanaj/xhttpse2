@@ -54,7 +54,7 @@ parseXmlByRegex(
   }
 );
 
-// sort domains alphabetically, from top level domains to lower ones
+// sort domains by top-level domains alphabetically, remove duplicates
 domains = domains
   .map(domain =>
     domain
@@ -68,7 +68,8 @@ domains = domains
       .split(".")
       .reverse()
       .join(".")
-  );
+  )
+  .filter((domain, index, arr) => arr.indexOf(domain, index + 1) < 0);
 
 // create temporary file
 const tmpFilename = path.join(
