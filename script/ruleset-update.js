@@ -46,13 +46,9 @@ parseXmlByRegex(content, /^\s*-\s*([^>\n]*)$/gm, matches => {
   domains.push(matches[1]);
 });
 
-parseXmlByRegex(
-  content,
-  /^\s*<target\s*host="([^"]*)"\s*\/>$/gm,
-  matches => {
-    domains.push(matches[1]);
-  }
-);
+parseXmlByRegex(content, /^\s*<target\s*host="([^"]*)"\s*\/>$/gm, matches => {
+  domains.push(matches[1]);
+});
 
 // sort domains by top-level domains alphabetically, remove duplicates
 domains = domains
