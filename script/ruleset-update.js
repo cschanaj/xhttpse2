@@ -23,10 +23,10 @@ if (process.argv.length <= 2) {
   process.exit();
 }
 
-// create a backup of the input FILE
+// create a backup of the input FILE if it does not exist
 const filename = process.argv[2];
 const backupFilename = filename + ".bak";
-if (fs.existsSync(filename)) {
+if (!fs.existsSync(backupFilename)) {
   fs.copyFileSync(filename, backupFilename);
 }
 
