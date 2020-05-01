@@ -6,6 +6,8 @@ const os = require("os");
 const path = require("path");
 const process = require("process");
 
+const tldsort = require("./libs/tldsort");
+
 function parseXmlByRegex(content, regex, postProcessingCallback) {
   let matches = null;
   while ((matches = regex.exec(content)) !== null) {
@@ -37,35 +39,25 @@ let rulesetName = "";
 let domains = [];
 
 // parse content to find the ruleset name in the FILE
-parseXmlByRegex(content, /^\s*<ruleset\s*name="([^"]*)"[^>]*>$/gm, matches => {
-  rulesetName = matches[1];
-});
+parseXmlByRegex(
+  content,
+  /^\s*<ruleset\s*name="([^"]*)"[^>]*>$/gm,
+  (matches) => {
+    rulesetName = matches[1];
+  }
+);
 
 // parse content to find domains in the FILE
-parseXmlByRegex(content, /^\s*-\s*([^>\n]*)$/gm, matches => {
+parseXmlByRegex(content, /^\s*-\s*([^>\n]*)$/gm, (matches) => {
   domains.push(matches[1]);
 });
 
-parseXmlByRegex(content, /^\s*<target\s*host="([^"]*)"\s*\/>$/gm, matches => {
+parseXmlByRegex(content, /^\s*<target\s*host="([^"]*)"\s*\/>$/gm, (matches) => {
   domains.push(matches[1]);
 });
 
 // sort domains by top-level domains alphabetically, remove duplicates
-domains = domains
-  .map(domain =>
-    domain
-      .split(".")
-      .reverse()
-      .join(".")
-  )
-  .sort()
-  .map(domain =>
-    domain
-      .split(".")
-      .reverse()
-      .join(".")
-  )
-  .filter((domain, index, arr) => arr.indexOf(domain, index + 1) < 0);
+domains = tldsort(domains);
 
 // create temporary file
 const tmpFilename = path.join(
