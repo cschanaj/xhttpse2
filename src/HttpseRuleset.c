@@ -29,7 +29,19 @@ HttpseRuleset_init(const HttpseRulesetOptions *roptions)
 
 	char ptr[1024];
 	size_t ptrlen = 0, index = 0;
-	FILE *infile = fopen(ru->roptions->path, "rb");
+
+	FILE *infile;
+
+	if (0 == strcmp("-", ru->roptions->path))
+	{
+		freopen(NULL, "rb", stdin);
+		infile = stdin;
+	}
+	else
+	{
+		infile = fopen(ru->roptions->path, "rb");
+	}
+
 	HttpseVector *infile_ctx = HttpseVector_init();
 
 	if(!infile || !infile_ctx)
