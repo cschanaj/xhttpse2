@@ -34,6 +34,8 @@ HttpseRuleset_init(const HttpseRulesetOptions *roptions)
 
 	if (0 == strcmp("-", ru->roptions->path))
 	{
+		/* freopen: https://stackoverflow.com/questions/584868/ */
+
 		freopen(NULL, "rb", stdin);
 		infile = stdin;
 	}
