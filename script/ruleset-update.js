@@ -7,17 +7,8 @@ const path = require("path");
 const process = require("process");
 
 const tldsort = require("./libs/tldsort");
-
-function parseXmlByRegex(content, regex, postProcessingCallback) {
-  let matches = null;
-  while ((matches = regex.exec(content)) !== null) {
-    // This is necessary to avoid infinite loops with zero-width matches
-    if (matches.index === regex.lastIndex) {
-      regex.lastIndex++;
-    }
-    postProcessingCallback(matches);
-  }
-}
+const parseRuleset = require("./libs/parseRuleset");
+const XHTTPSE_PATH = process.env.XHTTPSE_PATH || "../bin/xhttpse";
 
 // check the number of arguments
 if (process.argv.length <= 2) {
@@ -33,31 +24,14 @@ if (!fs.existsSync(backupFilename)) {
 }
 
 // read the content of the input FILE
-const content = fs.readFileSync(filename, { encoding: "utf8" });
+const xmlContent = fs.readFileSync(filename, { encoding: "utf8" });
+const ruleset = parseRuleset(xmlContent);
 
-let rulesetName = "";
-let domains = [];
-
-// parse content to find the ruleset name in the FILE
-parseXmlByRegex(
-  content,
-  /^\s*<ruleset\s*name="([^"]*)"[^>]*>$/gm,
-  (matches) => {
-    rulesetName = matches[1];
-  }
-);
-
-// parse content to find domains in the FILE
-parseXmlByRegex(content, /^\s*-\s*([^>\n]*)$/gm, (matches) => {
-  domains.push(matches[1]);
-});
-
-parseXmlByRegex(content, /^\s*<target\s*host="([^"]*)"\s*\/>$/gm, (matches) => {
-  domains.push(matches[1]);
-});
+console.log(JSON.stringify(ruleset, null, 2));
+process.exit();
 
 // sort domains by top-level domains alphabetically, remove duplicates
-domains = tldsort(domains);
+ruleset.target.hosts = tldsort(ruleset.target.hosts);
 
 // create temporary file
 const tmpFilename = path.join(
@@ -65,10 +39,21 @@ const tmpFilename = path.join(
   "FUXMERANDM-" + Date.now().toString()
 );
 
-fs.writeFileSync(tmpFilename, domains.join("\n"), { encoding: "utf8" });
+fs.writeFileSync(tmpFilename, ruleset.target.hosts.join("\n"), {
+  encoding: "utf8",
+});
 
-// rewrite the ruleset FILE completely
-const command = `${__dirname}/../bin/xhttpse --num-threads 16 --name "${rulesetName}" -o "${filename}" "${tmpFilename}"`;
+// construct commands from raw parts to rewrite the ruleset completely
+const rawCommandParts = [
+  XHTTPSE_PATH,
+  "--num-threads " + os.cpus().length,
+  ruleset.securecookie ? "--securecookie" : null,
+  "--name " + `"${ruleset.metadata.name}"`,
+  "-o " + `"${filename}"`,
+  `"${tmpFilename}"`,
+];
+
+const command = rawCommandParts.filter((part) => part !== null).join(" ");
 child_process.execSync(command);
 
 // remove temporary file
