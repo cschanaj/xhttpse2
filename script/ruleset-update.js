@@ -27,9 +27,6 @@ if (!fs.existsSync(backupFilename)) {
 const xmlContent = fs.readFileSync(filename, { encoding: "utf8" });
 const ruleset = parseRuleset(xmlContent);
 
-console.log(JSON.stringify(ruleset, null, 2));
-process.exit();
-
 // sort domains by top-level domains alphabetically, remove duplicates
 ruleset.target.hosts = tldsort(ruleset.target.hosts);
 
