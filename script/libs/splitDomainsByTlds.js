@@ -13,11 +13,12 @@ function splitDomainsByTlds(domains) {
 
     // remove possible duplicates
     tlds = Array.from(new Set(tlds));
+    let tmp = tlds
+      .map((tld) => domains.filter((domain) => domain.endsWith(`.${tld}`)))
+      .filter((arr) => arr.length > 0);
 
-    if (tlds.length > 1) {
-      retval = tlds.map((tld) =>
-        domains.filter((domain) => domain.endsWith(`.${tld}`))
-      );
+    if (tmp.length > 1) {
+      retval = tmp;
       break;
     }
   }

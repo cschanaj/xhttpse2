@@ -18,8 +18,7 @@ if (process.argv.length <= 2) {
 }
 
 // create a backup of the input FILE if it does not exist
-// path.normalize mess up files with underscore in their names
-const filename = process.argv[2];
+const filename = path.normalize(process.argv[2]);
 const backupFilename = filename + ".bak";
 if (!fs.existsSync(backupFilename)) {
   fs.copyFileSync(filename, backupFilename);
