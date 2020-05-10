@@ -12,7 +12,8 @@ function tldsort(domains) {
     .map((domain) => domain.split(".").reverse().join("."))
     .sort()
     .map((domain) => domain.split(".").reverse().join("."))
-    .filter((domain, index, arr) => arr.indexOf(domain, index + 1) < 0);
+    .filter((domain, index, arr) => arr.indexOf(domain, index + 1) < 0)
+    .filter((domain) => domain.indexOf("*") === -1);
 }
 
 module.exports = tldsort;
