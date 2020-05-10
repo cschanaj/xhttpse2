@@ -51,11 +51,11 @@ for (const domains of domainGroups) {
     ruleset.securecookie ? "--securecookie" : null,
     "--name " + domainGroups.length === 1
       ? `'${ruleset.metadata.name}'`
-      : `'${domains[0]}`,
+      : `'${domains[0]}'`,
     "-o " + domainGroups.length === 1
       ? `'${filename}'`
       : `'${path.join(path.dirname(filename), domains[0])}.xml'`,
-    `"${tmpFilename}"`,
+    `'${tmpFilename}'`,
   ];
 
   const command = rawCommandParts.filter((part) => part !== null).join(" ");
