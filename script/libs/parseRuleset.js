@@ -38,7 +38,10 @@ function parseRuleset(xmlContent) {
       name: [/^\s*<ruleset\s*name="([^"]*)"[^>]*>$/gm],
     },
     target: {
-      hosts: [/^\s*-\s*([^>\n]*)$/gm, /^\s*<target\s*host="([^"]*)"\s*\/>$/gm],
+      hosts: [
+        /^\s*-\s+([^\s\\()]+)/gm,
+        /^\s*<target\s*host="([^"]*)"\s*\/>$/gm,
+      ],
     },
     securecookie: [/<securecookie\s*host="[^"]*"\s*name="[^"]*"\s*\/>/gm],
     test: {
@@ -54,7 +57,8 @@ function parseRuleset(xmlContent) {
 
   namedRegExp.target.hosts.forEach((regex) => {
     parseXmlByRegExp(xmlContent, regex, (matches) => {
-      ruleset.target.hosts.push(matches[1]);
+      const hostname = matches[1];
+      ruleset.target.hosts.push(hostname);
     });
   });
 
