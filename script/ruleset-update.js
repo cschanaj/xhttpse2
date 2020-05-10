@@ -49,16 +49,18 @@ for (const domains of domainGroups) {
     XHTTPSE_PATH,
     "--num-threads " + os.cpus().length,
     ruleset.securecookie ? "--securecookie" : null,
-    "--name " + domainGroups.length === 1
-      ? `'${ruleset.metadata.name}'`
-      : `'${domains[0]}'`,
-    "-o " + domainGroups.length === 1
-      ? `'${filename}'`
-      : `'${path.join(path.dirname(filename), domains[0])}.xml'`,
+    "--name " +
+      (domainGroups.length === 1
+        ? `'${ruleset.metadata.name}'`
+        : `'${domains[0]}'`),
+    "-o " +
+      (domainGroups.length === 1
+        ? `'${filename}'`
+        : `'${path.dirname(filename)}/${domains[0]}.xml'`),
     `'${tmpFilename}'`,
   ];
 
-  const command = rawCommandParts.filter((part) => part !== null).join(" ");
+  const command = rawCommandParts.filter((part) => part != null).join(" ");
   child_process.execSync(command);
 
   // remove temporary file
