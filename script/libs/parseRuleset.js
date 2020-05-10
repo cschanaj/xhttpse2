@@ -39,7 +39,7 @@ function parseRuleset(xmlContent) {
     },
     target: {
       hosts: [
-        /^\s*-\s*([^>\n\s-]+)/gm,
+        /^\s*-\s+([^\s\\()]+)/gm,
         /^\s*<target\s*host="([^"]*)"\s*\/>$/gm,
       ],
     },
