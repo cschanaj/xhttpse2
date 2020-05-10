@@ -33,6 +33,10 @@ ruleset.target.hosts = tldsort(ruleset.target.hosts);
 
 // handle multiple TLDs rulesets
 const domainGroups = splitDomainsByTlds(ruleset.target.hosts);
+if (domainGroups.length > 1) {
+  
+}
+
 for (const domains of domainGroups) {
   // create temporary file
   const tmpFilename = path.join(
@@ -62,6 +66,11 @@ for (const domains of domainGroups) {
 
   const command = rawCommandParts.filter((part) => part != null).join(" ");
   child_process.execSync(command);
+
+  // remove the original file if neccessary
+  if (domainGroups.length > 1) {
+    fs.unlinkSync(filename);
+  }
 
   // remove temporary file
   fs.unlinkSync(tmpFilename);
