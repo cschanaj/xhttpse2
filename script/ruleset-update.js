@@ -33,10 +33,6 @@ ruleset.target.hosts = tldsort(ruleset.target.hosts);
 
 // handle multiple TLDs rulesets
 const domainGroups = splitDomainsByTlds(ruleset.target.hosts);
-if (domainGroups.length > 1) {
-  
-}
-
 for (const domains of domainGroups) {
   // create temporary file
   const tmpFilename = path.join(
