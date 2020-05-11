@@ -63,11 +63,11 @@ for (const domains of domainGroups) {
   const command = rawCommandParts.filter((part) => part != null).join(" ");
   child_process.execSync(command);
 
-  // remove the original file if neccessary
-  if (domainGroups.length > 1) {
-    fs.unlinkSync(filename);
-  }
-
   // remove temporary file
   fs.unlinkSync(tmpFilename);
+}
+
+// remove the original file if neccessary
+if (domainGroups.length > 1) {
+  fs.unlinkSync(filename);
 }
