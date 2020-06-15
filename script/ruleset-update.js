@@ -17,6 +17,12 @@ if (process.argv.length <= 2) {
   process.exit();
 }
 
+// warn if XHTTPSE_PATH does not exist
+if (!fs.existsSync(XHTTPSE_PATH)) {
+  console.log(`Error: File '${XHTTPSE_PATH}' does not exist.`);
+  process.exit(1);
+}
+
 // create a backup of the input FILE if it does not exist
 const filename = path.normalize(process.argv[2]);
 const backupFilename = filename + ".bak";
