@@ -1,6 +1,10 @@
 # xhttpse2
 Automatically generate HTTPS Everywhere ruleset
 
+## Notes
+
+This project is marked read-only from May 2021 per EFF's announcement on HTTPS Everywhere End-of-Life (https://www.eff.org/deeplinks/2021/04/https-everywhere-now-uses-duckduckgos-smarter-encryption).
+
 ## Usage
     $ xhttpse --help
     Usage: xhttpse [OPTION] ... [FILE]
